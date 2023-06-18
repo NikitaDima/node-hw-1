@@ -1,23 +1,43 @@
 const fs = require('fs/promises');
 const path = require('path');
+const { nanoid } = require('nanoid');
 
 const contactsPath = path.join(__dirname, 'db', 'contacts.json');
-console.log(contactsPath);
-// TODO: задокументувати кожну функцію
-function listContacts() {
-  // ...твій код. Повертає масив контактів.
-}
 
-function getContactById(contactId) {
-  // ...твій код. Повертає об'єкт контакту з таким id. Повертає null, якщо контакт з таким id не знайдений.
+// Повератємо масив об'єктів з файлу contacts.json
+async function listContacts() {
+  const data = await fs.readFile(contactsPath);
+  return JSON.parse(data);
 }
-
-function removeContact(contactId) {
-  // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
+// Перебираємо масив об'єктів і знаходимо потрібний по id
+async function getContactById(contactId) {
+  const contacts = await listContacts();
+  const contact = contacts.find(c => c.id === contactId);
+  return contact || null;
 }
-
-function addContact(name, email, phone) {
-  // ...твій код. Повертає об'єкт доданого контакту.
+// Видаляємо потрібний об'єкт за id
+async function removeContact(contactId) {
+  const contacts = await listContacts();
+  const index = contacts.findIndex(c => c.id === contactId);
+  if (index === -1) {
+    return null;
+  }
+  const removedContact = contacts.splice(index, 1);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return removedContact;
+}
+// Додаємо новий об'єкт у наш масив об'єктів
+async function addContact({ name, email, phone }) {
+  const contacts = await listContacts();
+  const newContact = {
+    id: nanoid(),
+    name,
+    email,
+    phone,
+  };
+  contacts.push(newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return newContact;
 }
 
 module.exports = {

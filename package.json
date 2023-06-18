@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/NikitaDima/node-hw-1#readme",
   "dependencies": {
+    "commander": "^11.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "nanoid": "^3.3.4",
     "nodemon": "^2.0.22",
     "yargs": "^17.7.2"
   }
